@@ -4,6 +4,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6.2-blue.svg)](https://www.typescriptlang.org/)
 [![Firebase](https://img.shields.io/badge/Firebase-12.6.0-orange.svg)](https://firebase.google.com/)
 [![Vite](https://img.shields.io/badge/Vite-7.2.4-purple.svg)](https://vitejs.dev/)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployed-black.svg)](https://vercel.com)
+
+**🌐 [라이브 데모 보기](https://grok-project-10-b5b4jr3vc-dongyeol-jungs-projects.vercel.app)**
 
 React + TypeScript + Vite 기반의 **완전한 MVP 프로젝트 관리 웹 애플리케이션**입니다. Firebase 백엔드와 통합되어 실시간 데이터 관리 및 사용자 인증을 제공합니다.
 
