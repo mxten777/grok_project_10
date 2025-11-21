@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // MVP 프로젝트 컬렉션에 대한 규칙
+    match /mvpProjects/{projectId} {
+      // 읽기: 모든 사용자 허용 (공개 포트폴리오로 사용)
+      allow read: if true;
+      
+      // 쓰기: 인증된 사용자만 허용
+      allow write: if request.auth != null;
+      
+      // 생성 시 필수 필드 검증
+      allow create: if request.auth != null 
+        && validateProjectData(request.resource.data);
+      
+      // 업데이트 시 필수 필드 검증 및 소유자 확인
+      allow update: if request.auth != null 
+        && validateProjectData(request.resource.data)
+        && (resource.data.createdBy == request.auth.uid || request.auth.uid == 'admin-uid');
+      
+      // 삭제: 소유자만 허용
+      allow delete: if request.auth != null 
+        && (resource.data.createdBy == request.auth.uid || request.auth.uid == 'admin-uid');
+    }
+    
+    // 사용자 프로필 컬렉션 (선택사항)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+  
+  // 프로젝트 데이터 검증 함수
+  function validateProjectData(data) {
+    return data.keys().hasAll(['title', 'category', 'techStack', 'status']) &&
+           data.title is string && data.title.size() > 0 &&
+           data.category is string && data.category.size() > 0 &&
+           data.techStack is list &&
+           data.status is string && data.status.size() > 0;
+  }
+}

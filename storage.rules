@@ -1,0 +1,25 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // 썸네일 이미지 업로드 규칙
+    match /thumbnails/{imageId} {
+      // 읽기: 모든 사용자 허용 (공개 이미지)
+      allow read: if true;
+      
+      // 쓰기: 인증된 사용자만 허용
+      allow write: if request.auth != null 
+        && validateImageFile();
+    }
+    
+    // 기타 파일들
+    match /uploads/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+  
+  // 이미지 파일 검증 함수
+  function validateImageFile() {
+    return request.resource.size < 5 * 1024 * 1024 // 5MB 제한
+      && request.resource.contentType.matches('image/.*');
+  }
+}
